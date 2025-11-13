@@ -291,9 +291,17 @@
     initParticles();
     loop();
 
-    // Countdown timer
-const TARGET_ISO = new Date(Date.now() + (3 * 60 + 5) * 60 * 1000).toISOString();
-    const target = new Date(TARGET_ISO);
+    // Countdown timer with localStorage
+    const STORAGE_KEY = 'live_timer_target';
+    let target;
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      target = new Date(saved);
+    } else {
+      target = new Date(Date.now() + (3 * 60 + 5) * 60 * 1000); // 3h 5m default
+      localStorage.setItem(STORAGE_KEY, target.toISOString());
+    }
+
     const daysEl = document.getElementById('days');
     const hoursEl = document.getElementById('hours');
     const minutesEl = document.getElementById('minutes');
@@ -314,8 +322,8 @@ const TARGET_ISO = new Date(Date.now() + (3 * 60 + 5) * 60 * 1000).toISOString()
       minutesEl.querySelector('.num').textContent = pad(m);
       secondsEl.querySelector('.num').textContent = pad(s);
 
-      if (target - new Date() <= 0){
-        headline.textContent = 'We are live!';
+      if (target - now <= 0){
+        headline.textContent = 'LIVE STARTED';
         document.querySelectorAll('.btn').forEach(b=>b.classList.add('pulse'));
       }
     }
